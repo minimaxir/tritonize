@@ -24,14 +24,14 @@ def color_select(threshold_matrix, colors):
     indices_matrix = (threshold_matrix * len(colors)).astype(int)
     return np.array(colors)[indices_matrix]
 
-col = imread("test/profile.png", mode='L')
+im = imread("test/profile.png", mode='L')
 
-bw = np.asarray(col).copy()
-blur = col.size / (blur_px_per_mp * math.pow(10, 6))
-gaussian_filter(bw, output=bw, sigma=blur)
+im = np.asarray(im).copy()
+blur = im.size / (blur_px_per_mp * math.pow(10, 6))
+gaussian_filter(im, output=im, sigma=blur)
 
-threshold_matrix = sigmoid(bw)
-col = color_select(threshold_matrix, colors)
+threshold_matrix = sigmoid(im)
+im = color_select(threshold_matrix, colors)
 
-imfile = toimage(col, mode='RGB')
+imfile = toimage(im, mode='RGB')
 imfile.save("test/profile_color.png")
