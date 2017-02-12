@@ -29,8 +29,8 @@ def color_select(threshold_matrix, colors):
 im = imread("test/profile.png", mode='L')
 
 im = np.asarray(im).copy()
-blur = im.size / (blur_px_per_mp * math.pow(10, 6))
-gaussian_filter(im, output=im, sigma=blur)
+#blur = im.size / (blur_px_per_mp * math.pow(10, 6))
+#gaussian_filter(im, output=im, sigma=blur)
 
 threshold_matrix = sigmoid(im)
 
