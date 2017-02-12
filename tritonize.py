@@ -1,10 +1,9 @@
 import numpy as np
-import math
 from scipy.misc import toimage
 from scipy.ndimage import imread, gaussian_filter
 from itertools import permutations
 
-colors = ['#1a1a1a', (255, 255, 255), (44, 62, 80)]
+colors = ['#1a1a1a', '#FFFFFF', (44, 62, 80)]
 
 blur_px_per_mp = 0.25
 
@@ -43,7 +42,7 @@ color_list = list(permutations(colors_triplets))
 im = imread("test/profile.png", mode='L')
 
 im = np.asarray(im).copy()
-# blur = im.size / (blur_px_per_mp * math.pow(10, 6))
+# blur = im.size / (blur_px_per_mp * 1000000)
 # gaussian_filter(im, output=im, sigma=blur)
 
 threshold_matrix = sigmoid(im)
