@@ -4,7 +4,7 @@ from scipy.misc import toimage
 from scipy.ndimage import imread, gaussian_filter
 
 colors = [(26, 26, 26), (255, 255, 255), (44, 62, 80)]
-blur_px_per_mp = 1
+blur_px_per_mp = 0.25
 
 
 def sigmoid(x):
