@@ -2,6 +2,9 @@ from PIL import Image, ImageFilter
 import numpy as np
 import math
 
+colors = [(26, 26, 26), (255, 255, 255), (44, 62, 80)]
+blur_factor = 400*400/200000
+
 
 def sigmoid(x):
 
@@ -9,18 +12,10 @@ def sigmoid(x):
     # since values between 0 and 255, (x-128)/32.0) converts range to about
     # (-4, 4)
 
-    result = 1 / (1 + math.exp(-((x - 128) / 32.0)))
+    return 1 / (1 + math.exp(-((x - 128) / 32.0)))
 
-    if result < 0.25:
-        return (26, 26, 26)
-    elif result < 0.50:
-        return (255, 255, 255)
-    elif result < 0.75:
-        return (189, 195, 199)
-    else:
-        return (44, 62, 80)
-
-col = Image.open("profile.png").filter(ImageFilter.GaussianBlur(2))
+col = Image.open("test/profile.png")
+col = col.filter(ImageFilter.GaussianBlur(blur_factor))
 
 gray = col.convert('L')
 col = col.convert('RGB')
@@ -29,8 +24,9 @@ bw = np.asarray(gray).copy()
 col = np.asarray(col).copy()
 
 for index, x in np.ndenumerate(bw):
-    col[index] = sigmoid(x)
+    threshold = sigmoid(x)
+    col[index] = colors[int(math.floor(threshold * len(colors)))]
 
 imfile = Image.fromarray(col)
-imfile = imfile.filter(ImageFilter.GaussianBlur(2))
-imfile.save("profile_color.png")
+imfile = imfile.filter(ImageFilter.GaussianBlur(blur_factor))
+imfile.save("test/profile_color.png")
