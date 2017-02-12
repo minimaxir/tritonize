@@ -1,7 +1,7 @@
-from PIL import Image, ImageFilter
 import numpy as np
 import math
 from scipy.misc import toimage
+from scipy.ndimage import imread, gaussian_filter
 
 colors = [(26, 26, 26), (255, 255, 255), (44, 62, 80)]
 blur_px_per_mp = 1
@@ -20,24 +20,18 @@ def sigmoid(x):
 def color_select(threshold_matrix, colors):
 
     # Takes a matrix of thresholds and returns a matrix of correpsonding colors
-    # The returned datatype is a matrix of 3-element tuples
 
     indices_matrix = (threshold_matrix * len(colors)).astype(int)
     return np.array(colors)[indices_matrix]
 
-col = Image.open("test/profile.png")
+col = imread("test/profile.png", mode='L')
 
-blur = (col.size[0] * col.size[1]) / (blur_px_per_mp * math.pow(10, 6))
-col = col.filter(ImageFilter.GaussianBlur(blur))
-
-gray = col.convert('L')
-col = col.convert('RGB')
-
-bw = np.asarray(gray).copy()
+bw = np.asarray(col).copy()
+blur = col.size / (blur_px_per_mp * math.pow(10, 6))
+gaussian_filter(bw, output=bw, sigma=blur)
 
 threshold_matrix = sigmoid(bw)
 col = color_select(threshold_matrix, colors)
 
-#col = map(tuple, col)
 imfile = toimage(col, mode='RGB')
 imfile.save("test/profile_color.png")
