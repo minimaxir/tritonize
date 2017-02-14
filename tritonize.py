@@ -42,9 +42,9 @@ def create_tritone(image_path, colors):
     im = imread(image_path, mode='L')
 
     im = np.asarray(im).copy()
-    # blur_px_per_mp = 0.25
-    # blur = im.size / (blur_px_per_mp * 1000000)
-    # gaussian_filter(im, output=im, sigma=blur)
+    blur_px_per_mp = 0.25
+    blur = im.size / (blur_px_per_mp * 1000000)
+    gaussian_filter(im, output=im, sigma=blur)
 
     threshold_matrix = sigmoid(im)
     base_name = os.path.splitext(os.path.basename(image_path))[0]
