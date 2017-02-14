@@ -1,8 +1,8 @@
 import numpy as np
 import argparse
 import os
-from scipy.misc import toimage
-from scipy.ndimage import imread, gaussian_filter
+from scipy.misc import *
+from scipy.ndimage import *
 from itertools import permutations
 
 
