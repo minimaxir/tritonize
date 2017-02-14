@@ -5,8 +5,6 @@ from scipy.misc import toimage
 from scipy.ndimage import imread, gaussian_filter
 from itertools import permutations
 
-colors = ['#1a1a1a', '#FFFFFF', (44, 62, 80)]
-
 
 def hex_to_rgb_triplet(triplet):
     # http://stackoverflow.com/a/4296727
@@ -62,14 +60,14 @@ def create_tritone(image_path, colors):
         imfile.save("tritonize/{}_{}.png".format(base_name, i + 1))
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser(
-    #     description='Tritonize - Convert Images to a minimal representation \
-    #     quickly with numpy')
-    # parser.add_argument('image',  help='Image file name')
-    # parser.add_argument(
-    #     '--colors', type=list, nargs='+',
-    #     help='List of colors (either RGB triplets or Hex strings)')
+    parser = argparse.ArgumentParser(
+        description='Tritonize - Convert images to a styled, minimal  \
+        representation quickly with NumPy')
+    parser.add_argument('-i', '--image',  help='Image file name',
+                        required=True)
+    parser.add_argument('-c',
+                        '--colors', nargs='+',
+                        help='List of colors (as HEX strings)', required=True)
 
-    # args = parser.parse_args()
-    #create_tritone(args.image, args.colors)
-    create_tritone('profile_old.png', ['#1a1a1a', '#FFFFFF', (44, 62, 80)])
+    args = parser.parse_args()
+    create_tritone(args.image, args.colors)
