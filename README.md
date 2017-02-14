@@ -17,6 +17,8 @@ python tritonize.py -i Lenna.png -c "#1a1a1a" "#FFFFFF" "#2c3e50" -b 10
 * the `-c/--color` required parameter specified the color, followed by quote-wrapped hexidecimal color representations
 * the `-b/--blur` optional parameter controls the blur strength per megapixel (default: 4)
 
+See the `examples` folder for more examples.
+
 ## Requirements
 numpy, scipy, PIL/Pillow
 
