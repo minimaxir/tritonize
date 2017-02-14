@@ -33,7 +33,7 @@ def color_select(threshold_matrix, colors):
     return np.array(colors)[indices_matrix]
 
 
-def create_tritone(image_path, colors):
+def create_tritone(image_path, colors, blur):
     colors_triplets = [hex_to_rgb_triplet(color) if isinstance(
         color, str) else color for color in colors]
 
@@ -42,8 +42,8 @@ def create_tritone(image_path, colors):
     im = imread(image_path, mode='L')
 
     im = np.asarray(im).copy()
-    blur_px_per_mp = 0.25
-    blur = im.size / (blur_px_per_mp * 1000000)
+    blur_px_per_mp = blur
+    blur = im.size * blur_px_per_mp / (1000000)
     gaussian_filter(im, output=im, sigma=blur)
 
     threshold_matrix = sigmoid(im)
@@ -68,6 +68,9 @@ if __name__ == '__main__':
     parser.add_argument('-c',
                         '--colors', nargs='+',
                         help='List of colors (as HEX strings)', required=True)
+    parser.add_argument('-b',
+                        '--blur', nargs='?', default=4.0, type=float,
+                        help='Blur strength')
 
     args = parser.parse_args()
-    create_tritone(args.image, args.colors)
+    create_tritone(args.image, args.colors, args.blur)
