@@ -1,6 +1,6 @@
-# Tritonize Examples
+# tritonize Examples
 
-These examples of Tritonize use the [Lenna test image](http://www.ece.rice.edu/~wakin/images/).
+These examples of `tritonize` use the [Lenna test image](http://www.ece.rice.edu/~wakin/images/).
 
 ## Command-Line Arguments For Examples
 
