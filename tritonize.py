@@ -1,11 +1,11 @@
 import numpy as np
+import argparse
+import os
 from scipy.misc import toimage
 from scipy.ndimage import imread, gaussian_filter
 from itertools import permutations
 
 colors = ['#1a1a1a', '#FFFFFF', (44, 62, 80)]
-
-blur_px_per_mp = 0.25
 
 
 def hex_to_rgb_triplet(triplet):
@@ -34,21 +34,42 @@ def color_select(threshold_matrix, colors):
     indices_matrix = (threshold_matrix * len(colors)).astype(int)
     return np.array(colors)[indices_matrix]
 
-colors_triplets = [hex_to_rgb_triplet(color) if isinstance(
-    color, str) else color for color in colors]
 
-color_list = list(permutations(colors_triplets))
+def create_tritone(image_path, colors):
+    colors_triplets = [hex_to_rgb_triplet(color) if isinstance(
+        color, str) else color for color in colors]
 
-im = imread("test/profile.png", mode='L')
+    color_list = list(permutations(colors_triplets))
 
-im = np.asarray(im).copy()
-# blur = im.size / (blur_px_per_mp * 1000000)
-# gaussian_filter(im, output=im, sigma=blur)
+    im = imread(image_path, mode='L')
 
-threshold_matrix = sigmoid(im)
+    im = np.asarray(im).copy()
+    # blur_px_per_mp = 0.25
+    # blur = im.size / (blur_px_per_mp * 1000000)
+    # gaussian_filter(im, output=im, sigma=blur)
 
-for i, color_set in enumerate(color_list):
-    im_color = color_select(threshold_matrix, color_set)
+    threshold_matrix = sigmoid(im)
+    base_name = os.path.splitext(os.path.basename(image_path))[0]
 
-    imfile = toimage(im_color, mode='RGB')
-    imfile.save("test/profile_color_{}.png".format(i + 1))
+    # Create directory to store the images
+    if not os.path.exists('tritonize'):
+        os.makedirs('tritonize')
+
+    for i, color_set in enumerate(color_list):
+        im_color = color_select(threshold_matrix, color_set)
+
+        imfile = toimage(im_color, mode='RGB')
+        imfile.save("tritonize/{}_{}.png".format(base_name, i + 1))
+
+if __name__ == '__main__':
+    # parser = argparse.ArgumentParser(
+    #     description='Tritonize - Convert Images to a minimal representation \
+    #     quickly with numpy')
+    # parser.add_argument('image',  help='Image file name')
+    # parser.add_argument(
+    #     '--colors', type=list, nargs='+',
+    #     help='List of colors (either RGB triplets or Hex strings)')
+
+    # args = parser.parse_args()
+    #create_tritone(args.image, args.colors)
+    create_tritone('profile_old.png', ['#1a1a1a', '#FFFFFF', (44, 62, 80)])
