@@ -23,5 +23,8 @@ numpy, scipy, PIL/Pillow
 ## Maintainer
 Max Woolf ([@minimaxir](http://minimaxir.com))
 
+## Credits
+User martineau on Stack Overflow for [an easy method](http://stackoverflow.com/a/4296727) of converting color hex strings to triplets.
+
 ## License
 MIT
