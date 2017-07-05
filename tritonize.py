@@ -15,8 +15,8 @@ def string_to_rgb_triplet(triplet):
         _NUMERALS = '0123456789abcdefABCDEF'
         _HEXDEC = {v: int(v, 16)
                    for v in (x + y for x in _NUMERALS for y in _NUMERALS)}
-        return _HEXDEC[triplet[0:2]], _HEXDEC[triplet[2:4]],
-    _HEXDEC[triplet[4:6]], 255
+        return (_HEXDEC[triplet[0:2]], _HEXDEC[triplet[2:4]],
+                _HEXDEC[triplet[4:6]], 255)
 
     else:
         # https://stackoverflow.com/a/9763133
