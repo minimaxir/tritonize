@@ -6,6 +6,8 @@ from scipy.ndimage import *
 from itertools import permutations
 from ast import literal_eval as make_tuple
 from PIL import Image
+from matplotlib.colors import makeMappingArray
+from matplotlib.pyplot import get_cmap
 
 
 def string_to_rgb_triplet(triplet):
@@ -43,7 +45,8 @@ def color_select(threshold_matrix, colors):
     return np.array(colors)[indices_matrix]
 
 
-def create_tritone(image_path, colors, blur, bg_color):
+def create_tritone(image_path, colors, blur, bg_color,
+                   palette_name, direction):
     colors_triplets = [string_to_rgb_triplet(color) if isinstance(
         color, str) else color for color in colors]
 
@@ -59,7 +62,11 @@ def create_tritone(image_path, colors, blur, bg_color):
     threshold_matrix = sigmoid(im)
     base_name = os.path.splitext(os.path.basename(image_path))[0]
 
-    background = Image.new('RGBA', im.shape, make_tuple(bg_color))
+    if palette_name:
+        background = make_gradient(im.shape, palette_name,
+                                   direction)
+    else:
+        background = Image.new('RGBA', im.shape, make_tuple(bg_color))
 
     # Create directory to store the images
     if not os.path.exists('tritonize'):
@@ -72,6 +79,25 @@ def create_tritone(image_path, colors, blur, bg_color):
 
         merged = Image.alpha_composite(background, imfile)
         merged.save("tritonize/{}_{}.png".format(base_name, i + 1))
+
+
+def make_gradient(img_size, palette_name, direction):
+    background = Image.new('RGBA', img_size, (0, 0, 0, 0))
+    palette = makeMappingArray(img_size[1], get_cmap(palette_name))
+
+    for y in range(img_size[1]):
+        for x in range(img_size[0]):
+            color = palette[x] if direction == 'h' else palette[y]
+
+            # matplotlib color maps are from range of (0,1). Convert to RGB.
+            r = int(color[0] * 255)
+            g = int(color[1] * 255)
+            b = int(color[2] * 255)
+
+            background.putpixel((x, y), (r, g, b))
+
+    return background
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -88,7 +114,16 @@ if __name__ == '__main__':
                         help='Blur strength')
     parser.add_argument('-bg',
                         '--background', nargs='?', default="(0, 0, 0, 0)",
-                        help='Background color (for transparent images)')
+                        help='Background color')
+
+    parser.add_argument('-p',
+                        '--palette', nargs='?', default=None,
+                        help='matplotlib palette for background')
+
+    parser.add_argument('-d',
+                        '--direction', nargs='?', default='h',
+                        help='Direction of gradient (if applicable)')
 
     args = parser.parse_args()
-    create_tritone(args.image, args.colors, args.blur, args.background)
+    create_tritone(args.image, args.colors, args.blur, args.background,
+                   args.palette, args.direction)
