@@ -46,7 +46,7 @@ def color_select(threshold_matrix, colors):
 
 
 def create_tritone(image_path, colors, blur, bg_color,
-                   palette_name, direction):
+                   palette_name):
     colors_triplets = [string_to_rgb_triplet(color) if isinstance(
         color, str) else color for color in colors]
 
@@ -63,10 +63,10 @@ def create_tritone(image_path, colors, blur, bg_color,
     base_name = os.path.splitext(os.path.basename(image_path))[0]
 
     if palette_name:
-        background = make_gradient(im.shape, palette_name,
-                                   direction)
+        background = make_gradient((im.shape[1], im.shape[0]), palette_name)
     else:
-        background = Image.new('RGBA', im.shape, make_tuple(bg_color))
+        background = Image.new(
+            'RGBA', (im.shape[1], im.shape[0]), make_tuple(bg_color))
 
     # Create directory to store the images
     if not os.path.exists('tritonize'):
@@ -81,11 +81,9 @@ def create_tritone(image_path, colors, blur, bg_color,
         merged.save("tritonize/{}_{}.png".format(base_name, i + 1))
 
 
-def make_gradient(img_size, palette_name, direction):
+def make_gradient(img_size, palette_name):
     background = Image.new('RGBA', img_size, (0, 0, 0, 0))
     palette = makeMappingArray(img_size[0], get_cmap(palette_name))
-
-    # order = (0, 1) if direction == 'h' else (1, 0)
 
     rgb_sequence = []
     for x in range(img_size[0]):
@@ -124,10 +122,10 @@ if __name__ == '__main__':
                         '--palette', nargs='?', default=None,
                         help='matplotlib palette for background')
 
-    parser.add_argument('-d',
-                        '--direction', nargs='?', default='h',
-                        help='Direction of gradient (if applicable)')
+    # parser.add_argument('-d',
+    #                     '--direction', nargs='?', default='h',
+    #                     help='Direction of gradient (if applicable)')
 
     args = parser.parse_args()
-    create_tritone(args.image, args.colors, args.blur, args.background,
-                   args.palette, args.direction)
+    create_tritone(args.image, args.colors, args.blur,
+                   args.background, args.palette)
