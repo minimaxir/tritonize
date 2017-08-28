@@ -5,6 +5,7 @@ from scipy.misc import *
 from scipy.ndimage import *
 from itertools import permutations
 from ast import literal_eval as make_tuple
+from PIL import Image
 
 
 def string_to_rgb_triplet(triplet):
@@ -42,7 +43,7 @@ def color_select(threshold_matrix, colors):
     return np.array(colors)[indices_matrix]
 
 
-def create_tritone(image_path, colors, blur):
+def create_tritone(image_path, colors, blur, bg_color):
     colors_triplets = [string_to_rgb_triplet(color) if isinstance(
         color, str) else color for color in colors]
 
@@ -58,6 +59,8 @@ def create_tritone(image_path, colors, blur):
     threshold_matrix = sigmoid(im)
     base_name = os.path.splitext(os.path.basename(image_path))[0]
 
+    background = Image.new('RGBA', im.shape, make_tuple(bg_color))
+
     # Create directory to store the images
     if not os.path.exists('tritonize'):
         os.makedirs('tritonize')
@@ -66,7 +69,9 @@ def create_tritone(image_path, colors, blur):
         im_color = color_select(threshold_matrix, color_set)
 
         imfile = toimage(im_color, mode='RGBA')
-        imfile.save("tritonize/{}_{}.png".format(base_name, i + 1))
+
+        merged = Image.alpha_composite(background, imfile)
+        merged.save("tritonize/{}_{}.png".format(base_name, i + 1))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -81,6 +86,9 @@ if __name__ == '__main__':
     parser.add_argument('-b',
                         '--blur', nargs='?', default=4.0, type=float,
                         help='Blur strength')
+    parser.add_argument('-bg',
+                        '--background', nargs='?', default="(0, 0, 0, 0)",
+                        help='Background color (for transparent images)')
 
     args = parser.parse_args()
-    create_tritone(args.image, args.colors, args.blur)
+    create_tritone(args.image, args.colors, args.blur, args.background)

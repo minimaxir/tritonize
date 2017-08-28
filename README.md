@@ -25,6 +25,7 @@ python tritonize.py -i Lenna.png -c "(0, 0, 0, 0)" "(26, 26, 26, 128)" "(255, 25
 * the `-i/--image` required parameter specifies the image file.
 * the `-c/--color` required parameter specified the color, followed by quote-wrapped hexidecimal, 3-element RGB, or 4-element RGBA color representations. [NB: the last RGBA parameter is scaled from 0 to 255]
 * the `-b/--blur` optional parameter controls the blur strength per megapixel (default: 4)
+* the `-bg/--background` optional parameter sets the background color (only relevant if any colors are transparent)
 
 See the `examples` folder for more examples.
 
@@ -33,7 +34,7 @@ numpy, scipy, PIL/Pillow
 
 ## Todo
 
-* Add paramet to set a background color/gradient for when colors are transparent.
+* Add function to set a gradient for when colors are transparent.
 
 ## Maintainer
 Max Woolf ([@minimaxir](http://minimaxir.com))
