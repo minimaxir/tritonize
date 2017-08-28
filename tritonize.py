@@ -83,18 +83,22 @@ def create_tritone(image_path, colors, blur, bg_color,
 
 def make_gradient(img_size, palette_name, direction):
     background = Image.new('RGBA', img_size, (0, 0, 0, 0))
-    palette = makeMappingArray(img_size[1], get_cmap(palette_name))
+    palette = makeMappingArray(img_size[0], get_cmap(palette_name))
 
-    for y in range(img_size[1]):
-        for x in range(img_size[0]):
-            color = palette[x] if direction == 'h' else palette[y]
+    # order = (0, 1) if direction == 'h' else (1, 0)
 
-            # matplotlib color maps are from range of (0,1). Convert to RGB.
-            r = int(color[0] * 255)
-            g = int(color[1] * 255)
-            b = int(color[2] * 255)
+    rgb_sequence = []
+    for x in range(img_size[0]):
+        color = palette[x]
 
-            background.putpixel((x, y), (r, g, b))
+        # matplotlib color maps are from range of (0,1). Convert to RGB.
+        r = int(color[0] * 255)
+        g = int(color[1] * 255)
+        b = int(color[2] * 255)
+
+        rgb_sequence.append((r, g, b))
+
+    background.putdata(rgb_sequence * img_size[1])
 
     return background
 
