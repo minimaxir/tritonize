@@ -27,3 +27,9 @@ python tritonize.py -i Lenna.png -c "#1a1a1a" "#FFFFFF" "#2c3e50" "#c0392b" "#7f
 ```shell
 python tritonize.py -i Lenna.png -c "(0, 0, 0, 0)" "(26, 26, 26, 128)" "(255, 255, 255, 255)" -b 2
 ```
+
+### Gradient
+
+```shell
+python tritonize.py -i Lenna.png -c "(0, 0, 0, 0)" "(26, 26, 26, 255)" "(255, 255, 255, 255)" -b 4 -p "spring"
+```
